@@ -1,3 +1,12 @@
+# zipscript
 package/
 *.zip
 auth/
+
+# venv
+bin/
+lib/
+etc/
+share/
+lib64
+pyvenv.cfg

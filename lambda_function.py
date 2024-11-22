@@ -33,7 +33,7 @@ def scrape():
     except:
         nextrow = next_available_row(worksheet)
         fund_text = worksheet.acell(f"B{str(int(nextrow) - 1)}").value
-    return datetime.datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"), int(fund_text.replace(",", ""))
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"), int(fund_text.replace(",", ""))
 
 def update_sheet():
     nextrow = next_available_row(worksheet)
@@ -47,5 +47,3 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps('fund updated')
     }
-
-print(scrape())
