@@ -1,10 +1,14 @@
 import gspread
 import json
+import yaml
 import requests
 from bs4 import BeautifulSoup
-import datetime
+from datetime import datetime, timezone
 
-fund_url = "https://pages.tankionline.com/winter-major-2023/p4c3cush3ql02rmw?lang=en"
+with open('config.yml', "r") as file:
+    fund_config = yaml.safe_load(file)
+
+fund_url = fund_config['link']
 
 gc = gspread.oauth(
     credentials_filename="./auth/credentials.json",
@@ -12,7 +16,7 @@ gc = gspread.oauth(
 )
 
 # test
-sh = gc.open("fund-winter-major")
+sh = gc.open(fund_config['sheet'])
 worksheet = sh.sheet1 # current sheet
 
 # get next row
@@ -29,7 +33,7 @@ def scrape():
     except:
         nextrow = next_available_row(worksheet)
         fund_text = worksheet.acell(f"B{str(int(nextrow) - 1)}").value
-    return datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M"), int(fund_text.replace(",", ""))
+    return datetime.datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"), int(fund_text.replace(",", ""))
 
 def update_sheet():
     nextrow = next_available_row(worksheet)
@@ -43,3 +47,5 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'body': json.dumps('fund updated')
     }
+
+print(scrape())
