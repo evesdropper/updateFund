@@ -25,15 +25,15 @@ def next_available_row(worksheet):
     return str(len(str_list)+1)
 
 def scrape():
-    # raise Exception("test")
+    nextrow = next_available_row(worksheet)
+    fund_text = worksheet.acell(f"B{str(int(nextrow) - 1)}").value
     try:
         page = requests.get(fund_url, timeout=(5, 15))
         soup = BeautifulSoup(page.content, "html.parser")
         fund = soup.find_all("div", class_="number")
-        fund_text = fund[0].text
+        fund_text = fund[0].text or fund_text
     except:
-        nextrow = next_available_row(worksheet)
-        fund_text = worksheet.acell(f"B{str(int(nextrow) - 1)}").value
+        pass
     return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M"), int(fund_text.replace(",", ""))
 
 def update_sheet():
