@@ -25,7 +25,8 @@ def next_available_row(worksheet):
     return str(len(str_list)+1)
 
 def scrape():
-    try: 
+    # raise Exception("test")
+    try:
         page = requests.get(fund_url, timeout=(5, 15))
         soup = BeautifulSoup(page.content, "html.parser")
         fund = soup.find_all("div", class_="number")
